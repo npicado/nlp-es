@@ -2,10 +2,19 @@
 
 namespace NLPes\Fichadores;
 
+use NLPes\Tuberia\Cola;
+
 class FichadorNatural implements FichadorInterfaz
 {
+    /**
+     * @inheritdoc
+     */
     public function fichar($texto)
     {
+        if (!is_string($texto)) {
+            throw new \InvalidArgumentException('La entrada debe ser cadena de texto.');
+        }
+
         // Convertirmos los caracteres no imprimibles en espacios
         $texto = preg_replace('/[\pZ\pC]+/u', ' ', $texto);
 
@@ -20,5 +29,20 @@ class FichadorNatural implements FichadorInterfaz
         $texto = preg_replace('/[\s]+/', ' ', $texto);
 
         return explode(' ', trim($texto));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function __invoke($entrada, Cola $cola)
+    {
+        $entrada = $this->fichar($entrada);
+
+        // Invocamos el próximo tubo en caso necesario
+        if ($proximoTubo = $cola->proximo()) {
+            $entrada = $proximoTubo->__invoke($entrada, $cola);
+        }
+
+        return $entrada;
     }
 }

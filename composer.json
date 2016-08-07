@@ -1,0 +1,22 @@
+{
+  "name": "npicado/nlp-es",
+  "authors": [
+    {
+      "name": "Nestor Picado",
+      "email": "info@nestorpicado.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.4.0",
+    "ext-mbstring": "*",
+    "nlp-tools/nlp-tools": "^0.1.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "NLPes\\": [
+        "NLPes/"
+      ]
+    }
+  }
+}

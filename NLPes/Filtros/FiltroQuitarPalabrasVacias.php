@@ -2,6 +2,8 @@
 
 namespace NLPes\Filtros;
 
+use NLPes\Tuberia\Cola;
+
 class FiltroQuitarPalabrasVacias implements FiltroInterfaz
 {
     private $palabrasVacias = [
@@ -331,12 +333,12 @@ class FiltroQuitarPalabrasVacias implements FiltroInterfaz
         'todito' => true,
         'tomar' => true,
         'trabaja' => false,
-        'trabajo' => false,
+//        'trabajo' => false,
         'trabajáis' => false,
         'trabajais' => false,
         'trabajamos' => false,
-        'trabajan' => false,
-        'trabajar' => false,
+//        'trabajan' => false,
+//        'trabajar' => false,
         'trabajas' => false,
         'tras' => true,
         'tú' => true,
@@ -346,8 +348,8 @@ class FiltroQuitarPalabrasVacias implements FiltroInterfaz
         'tuyas' => true,
         'tuyo' => true,
         'tuyos' => true,
-        'último' => false,
-        'ultimo' => false,
+//        'último' => false,
+//        'ultimo' => false,
         'un' => true,
         'una' => true,
         'unas' => true,
@@ -426,7 +428,7 @@ class FiltroQuitarPalabrasVacias implements FiltroInterfaz
         'estuviesen' => true,
         'estando' => true,
         'estada' => true,
-//    'estados' => false,
+//        'estados' => false,
         'estadas' => true,
         'estad' => true,
         'he' => true,
@@ -561,15 +563,47 @@ class FiltroQuitarPalabrasVacias implements FiltroInterfaz
         'e' => true,
         'mí' => true,
         'haber' => true,
+        'totalmente' => false,
     ];
 
-    public function filtrar($ficha)
+    public function filtrar($entrada)
     {
-        $temp = mb_convert_case($ficha, MB_CASE_LOWER, 'UTF-8');
-        if (isset($this->palabrasVacias[$temp])) {
-            return null;
+        $devolverCadena = false;
+
+        if (is_string($entrada)) {
+            $entrada = explode(' ', $entrada);
+            $devolverCadena = true;
+        } elseif (!is_array($entrada)) {
+            throw new \InvalidArgumentException('La entrada debe ser cadena de texto o arreglo.');
         }
 
-        return $ficha;
+//        $entrada = array_diff($entrada, $this->palabrasVacias2);
+        foreach ($entrada as $llave => $valor) {
+            if (isset($this->palabrasVacias[mb_convert_case($valor, MB_CASE_LOWER, 'UTF-8')])) {
+                unset($entrada[$llave]);
+            }
+        }
+
+        if ($devolverCadena) {
+            return implode(' ', $entrada);
+        }
+
+        return $entrada;
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function __invoke($entrada, Cola $cola)
+    {
+        $entrada = $this->filtrar($entrada);
+
+        // Invocamos el próximo tubo en caso necesario
+        if ($proximoTubo = $cola->proximo()) {
+            $entrada = $proximoTubo->__invoke($entrada, $cola);
+        }
+
+        return $entrada;
     }
 }

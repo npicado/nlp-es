@@ -2,11 +2,15 @@
 
 namespace NLPes\Filtros;
 
-interface FiltroInterfaz
+use NLPes\Tuberia\TuboInterfaz;
+
+interface FiltroInterfaz extends TuboInterfaz
 {
     /**
-     * @param string $ficha
+     * Converite la entrada al formato deseado.
+     *
+     * @param string $entrada
      * @return string
      */
-    public function filtrar($ficha);
+    public function filtrar($entrada);
 }

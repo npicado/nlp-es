@@ -2,7 +2,9 @@
 
 namespace NLPes\Fichadores;
 
-interface FichadorInterfaz
+use NLPes\Tuberia\TuboInterfaz;
+
+interface FichadorInterfaz extends TuboInterfaz
 {
     /**
      * Separa una cadena de texto en una secuencia de fichas
