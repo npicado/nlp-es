@@ -29,7 +29,7 @@ var_export($detector->analizar($textoFr));
 echo "\n\nTexto (PT):\n";
 var_export($detector->analizar($textoPt));
 
-$contenido = file_get_contents('../NLPes/Idiomas/document_pt.txt');
+$contenido = file_get_contents('document_pt.txt');
 $detector->entrenar($contenido, 'pt');
 echo "\n\nTexto (PT ya entrenado):\n";
 var_export($detector->analizar($textoPt));
