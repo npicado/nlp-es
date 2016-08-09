@@ -5,7 +5,7 @@ namespace NLPes\Clasificadores;
 use NLPes\Fichadores\FichadorEspacios;
 use NLPes\Tuberia\Cola;
 
-class ClasificadorNgramas implements ClasificadorInterfaz
+class ClasificadorBayesiano implements ClasificadorInterfaz
 {
     public $indice = [];
     public $conteo = [];
